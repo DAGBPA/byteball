@@ -61,7 +61,7 @@ angular.module('copayApp.controllers').controller('paperWalletController',
 		
       self.scanning = true;
       self.privateKey = '';
-      self.balanceBytes = 0;
+      self.balancePizza = 0;
       self.error = '';
 
       $timeout(function() {
@@ -72,7 +72,7 @@ angular.module('copayApp.controllers').controller('paperWalletController',
             self.error = err.message || err.toString();
           } else {
             self.privateKey = privateKey;
-            self.balanceBytes = balance;
+            self.balancePizza = balance;
             var config = configService.getSync().wallet.settings;
             self.balance = profileService.formatAmount(balance) + ' ' + config.unitName;
           }

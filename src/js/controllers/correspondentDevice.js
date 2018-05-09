@@ -2,24 +2,24 @@
 'use strict';
 
 
-var constants = require('byteballcore/constants.js');
+var constants = require('dag-pizza-dough/constants.js');
 
 angular.module('copayApp.controllers').controller('correspondentDeviceController',
   function($scope, $rootScope, $timeout, $sce, $modal, configService, profileService, animationService, isCordova, go, correspondentListService, addressService, lodash, $deepStateRedirect, $state, backButton, gettext) {
 	
 	var async = require('async');
-	var chatStorage = require('byteballcore/chat_storage.js');
+	var chatStorage = require('dag-pizza-dough/chat_storage.js');
 	var self = this;
 	console.log("correspondentDeviceController");
-	var privateProfile = require('byteballcore/private_profile.js');
-	var objectHash = require('byteballcore/object_hash.js');
-	var db = require('byteballcore/db.js');
-	var network = require('byteballcore/network.js');
-	var device = require('byteballcore/device.js');
-	var eventBus = require('byteballcore/event_bus.js');
-	var conf = require('byteballcore/conf.js');
-	var storage = require('byteballcore/storage.js');
-	var breadcrumbs = require('byteballcore/breadcrumbs.js');
+	var privateProfile = require('dag-pizza-dough/private_profile.js');
+	var objectHash = require('dag-pizza-dough/object_hash.js');
+	var db = require('dag-pizza-dough/db.js');
+	var network = require('dag-pizza-dough/network.js');
+	var device = require('dag-pizza-dough/device.js');
+	var eventBus = require('dag-pizza-dough/event_bus.js');
+	var conf = require('dag-pizza-dough/conf.js');
+	var storage = require('dag-pizza-dough/storage.js');
+	var breadcrumbs = require('dag-pizza-dough/breadcrumbs.js');
 	
 	var fc = profileService.focusedClient;
 	var chatScope = $scope;
@@ -37,7 +37,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 
 	$scope.$watch("correspondent.my_record_pref", function(pref, old_pref) {
 		if (pref == old_pref) return;
-		var device = require('byteballcore/device.js');
+		var device = require('dag-pizza-dough/device.js');
 		device.sendMessageToDevice(correspondent.device_address, "chat_recording_pref", pref, {
 			ifOk: function(){
 				device.updateCorrespondentProps(correspondent);
@@ -186,7 +186,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 	
 	
 	$scope.offerContract = function(address){
-		var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses.js');
+		var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses.js');
 		$rootScope.modalOpened = true;
 		var fc = profileService.focusedClient;
 		$scope.oracles = configService.oracles;
@@ -206,7 +206,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 				var info = {asset: b.asset, is_private: b.is_private};
 				if (b.asset === 'base')
 					info.displayName = walletSettings.unitName;
-				else if (b.asset === constants.BLACKBYTES_ASSET)
+				else if (b.asset === constants.NOODLES_ASSET)
 					info.displayName = walletSettings.bbUnitName;
 				else if (profileService.assetMetadata[b.asset])
 					info.displayName = profileService.assetMetadata[b.asset].name;
@@ -273,7 +273,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 					var my_amount = contract.myAmount;
 					if (contract.myAsset === "base")
 						my_amount *= walletSettings.unitValue;
-					if (contract.myAsset === constants.BLACKBYTES_ASSET)
+					if (contract.myAsset === constants.NOODLES_ASSET)
 						my_amount *= walletSettings.bbUnitValue;
 					if (profileService.assetMetadata[contract.myAsset])
 						my_amount *= Math.pow(10, profileService.assetMetadata[contract.myAsset].decimals || 0);
@@ -282,8 +282,8 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 					var peer_amount = contract.peerAmount;
 					if (contract.peerAsset === "base")
 						peer_amount *= walletSettings.unitValue;
-					if (contract.peerAsset === constants.BLACKBYTES_ASSET)
-						throw Error("peer asset cannot be blackbytes");
+					if (contract.peerAsset === constants.NOODLES_ASSET)
+						throw Error("peer asset cannot be noodles");
 					if (profileService.assetMetadata[contract.peerAsset])
 						peer_amount *= Math.pow(10, profileService.assetMetadata[contract.peerAsset].decimals || 0);
 					peer_amount = Math.round(peer_amount);
@@ -412,7 +412,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 								paymentRequestCode = 'payment:'+paymentJsonBase64;
 							}
 							else
-								paymentRequestCode = 'byteball:'+my_address+'?amount='+peer_amount+'&asset='+encodeURIComponent(contract.peerAsset);
+								paymentRequestCode = 'dagpizza:'+my_address+'?amount='+peer_amount+'&asset='+encodeURIComponent(contract.peerAsset);
 							var paymentRequestText = '[your share of payment to the contract]('+paymentRequestCode+')';
 							device.sendMessageToDevice(correspondent.device_address, 'text', paymentRequestText);
 							var body = correspondentListService.formatOutgoingMessage(paymentRequestText);
@@ -457,7 +457,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 	
 
 	$scope.sendMultiPayment = function(paymentJsonBase64){
-		var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses.js');
+		var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses.js');
 		var paymentJson = Buffer(paymentJsonBase64, 'base64').toString('utf8');
 		console.log("multi "+paymentJson);
 		var objMultiPaymentRequest = JSON.parse(paymentJson);
@@ -989,7 +989,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 			$scope.color = fc.backgroundColor;
 			$scope.signed_message = objSignedMessage.signed_message;
 			$scope.address = objSignedMessage.authors[0].address;
-			var validation = require('byteballcore/validation.js');
+			var validation = require('dag-pizza-dough/validation.js');
 			validation.validateSignedMessage(objSignedMessage, function(err){
 				$scope.bValid = !err;
 				if (err)
@@ -1100,7 +1100,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 	}
 	
 	function issueNextAddress(cb){
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
 		walletDefinedByKeys.issueNextAddress(profileService.focusedClient.credentials.walletId, 0, function(addressInfo){
 			if (cb)
 				cb(addressInfo.address);
@@ -1111,7 +1111,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 	function issueNextAddressIfNecessary(onDone){
 		if (myPaymentAddress) // do not issue new address
 			return onDone();
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
 		walletDefinedByKeys.issueOrSelectNextAddress(fc.credentials.walletId, 0, function(addressInfo){
 			myPaymentAddress = addressInfo.address; // cache it in case we need to insert again
 			onDone();
@@ -1180,7 +1180,7 @@ angular.module('copayApp.controllers').controller('correspondentDeviceController
 				if (asset !== 'base')
 					params += '&asset='+encodeURIComponent(asset);
 				var units = profileService.getUnitName(asset);
-				appendText('['+amount+' '+units+'](byteball:'+myPaymentAddress+'?'+params+')');
+				appendText('['+amount+' '+units+'](dagpizza:'+myPaymentAddress+'?'+params+')');
 				$modalInstance.dismiss('cancel');
 			};
 

@@ -1,5 +1,5 @@
-var BLACKBYTES_ASSET = require('byteballcore/constants').BLACKBYTES_ASSET;
-var balances = require('byteballcore/balances');
+var NOODLES_ASSET = require('dag-pizza-dough/constants').NOODLES_ASSET;
+var balances = require('dag-pizza-dough/balances');
 var utils = require('../../angular-bitcore-wallet-client/bitcore-wallet-client/lib/common/utils');
 var fileSystem = require('./fileStorage');
 var completeClientLoaded = false;
@@ -137,7 +137,7 @@ function initWallet() {
 	}
 
 	function loadCompleteClient(showClient) {
-		self._bByteballCoreLoaded = false; //"fix" : Looks like you are loading multiple copies of byteball core, which is not supported. Running 'npm dedupe' might help.
+		self._bdag-pizza-doughLoaded = false; //"fix" : Looks like you are loading multiple copies of dag-pizza core, which is not supported. Running 'npm dedupe' might help.
 		var body = document.body;
 		var page = document.createElement('div');
 
@@ -145,10 +145,10 @@ function initWallet() {
 		var angularJs = document.createElement('script');
 		angularJs.src = 'angular.js';
 		angularJs.onload = function() {
-			var byteballJS = document.createElement('script');
-			byteballJS.src = 'byteball.js';
-			body.appendChild(byteballJS);
-			byteballJS.onload = function() {
+			var dagpizzaJS = document.createElement('script');
+			dagpizzaJS.src = 'dagpizza.js';
+			body.appendChild(dagpizzaJS);
+			dagpizzaJS.onload = function() {
 				if(showClient) showCompleteClient();
 			}
 		};
@@ -170,8 +170,8 @@ function initWallet() {
 	function initFocusedWallet(cb) {
 		setWalletNameAndColor(root.focusedClient.credentials.walletName);
 		balances.readBalance(root.focusedClient.credentials.walletId, function(assocBalances) {
-			if (!assocBalances[BLACKBYTES_ASSET])
-				assocBalances[BLACKBYTES_ASSET] = {is_private: 1, stable: 0, pending: 0};
+			if (!assocBalances[NOODLES_ASSET])
+				assocBalances[NOODLES_ASSET] = {is_private: 1, stable: 0, pending: 0};
 			balances.readSharedBalance(root.focusedClient.credentials.walletId, function(assocSharedBalances) {
 				for (var asset in assocSharedBalances)
 					if (!assocBalances[asset])
@@ -233,20 +233,20 @@ function initWallet() {
 		openOrCloseMenu();
 	}
 	
-	function formatAmount(bytes, asset) {
+	function formatAmount(pizza, asset) {
 		var setting = root.config.wallet.settings;
 		var name = asset;
 		var unitCode;
 		if(asset === 'base'){
 			name = setting.unitName;
 			unitCode = setting.unitCode;
-		}else if(asset === BLACKBYTES_ASSET){
+		}else if(asset === NOODLES_ASSET){
 			name = setting.bbUnitName;
 			unitCode = setting.bbUnitCode;
 		}else {
 			unitCode = 'one';
 		}
-		return utils.formatAmount(bytes, unitCode) + ' ' + name;
+		return utils.formatAmount(pizza, unitCode) + ' ' + name;
 	}
 
 	root.showCompleteClient = showCompleteClient;

@@ -1,13 +1,14 @@
 {
-  "name": "byteball",
+  "name": "dagpizza",
   "keywords": [
-    "byteball",
+    "DAG",
+    "Pizza",
     "wallet",
     "multisignature"
   ],
   "dependencies": {
     "angular": "1",
-    "angular-foundation": "byteball/angular-foundation",
+    "angular-foundation": "DAGBPA/angular-foundation",
     "angular-gettext": "2",
     "angular-touch": "1",
     "angular-carousel": "*",

@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.byteball.wallet"
-  version="2.2.0"
+<widget id="org.dagpizza.wallet"
+  version="0.1.0"
   android-versionCode="1065"
-  ios-CFBundleVersion="2.2.0">
-    <name>Byteball</name>
+  ios-CFBundleVersion="0.1.0">
+    <name>DAGPizza</name>
     <description>
-      Byteball wallet.
+      DAGPizza wallet.
     </description>
-    <author email="byteball@byteball.org" href="https://byteball.org">
-        Byteball
+    <author email="bitcoinpizza.bpa@gmail.com" href="http://p.top">
+        DAGPizza
     </author>
     <content src="index.html" />
     <access origin="*" />

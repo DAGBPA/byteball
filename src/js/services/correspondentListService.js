@@ -1,16 +1,16 @@
 'use strict';
 
-var constants = require('byteballcore/constants.js');
-var eventBus = require('byteballcore/event_bus.js');
-var ValidationUtils = require('byteballcore/validation_utils.js');
-var objectHash = require('byteballcore/object_hash.js');
+var constants = require('dag-pizza-dough/constants.js');
+var eventBus = require('dag-pizza-dough/event_bus.js');
+var ValidationUtils = require('dag-pizza-dough/validation_utils.js');
+var objectHash = require('dag-pizza-dough/object_hash.js');
 
 angular.module('copayApp.services').factory('correspondentListService', function($state, $rootScope, $sce, $compile, configService, storageService, profileService, go, lodash, $stickyState, $deepStateRedirect, $timeout, gettext) {
 	var root = {};
-	var device = require('byteballcore/device.js');
-	var wallet = require('byteballcore/wallet.js');
+	var device = require('dag-pizza-dough/device.js');
+	var wallet = require('dag-pizza-dough/wallet.js');
 
-	var chatStorage = require('byteballcore/chat_storage.js');
+	var chatStorage = require('dag-pizza-dough/chat_storage.js');
 	$rootScope.newMessagesCount = {};
 	$rootScope.newMsgCounterEnabled = false;
 
@@ -36,7 +36,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 	}, true);
 	
 	function addIncomingMessageEvent(from_address, body, message_counter){
-		var walletGeneral = require('byteballcore/wallet_general.js');
+		var walletGeneral = require('dag-pizza-dough/wallet_general.js');
 		walletGeneral.readMyAddresses(function(arrMyAddresses){
 			body = highlightActions(escapeHtml(body), arrMyAddresses);
 			body = text2html(body);
@@ -98,7 +98,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		messages.push(msg_obj);
 	}
 	
-	var payment_request_regexp = /\[.*?\]\(byteball:([0-9A-Z]{32})\?([\w=&;+%]+)\)/g; // payment description within [] is ignored
+	var payment_request_regexp = /\[.*?\]\(dagpizza:([0-9A-Z]{32})\?([\w=&;+%]+)\)/g; // payment description within [] is ignored
 	
 	function highlightActions(text, arrMyAddresses){
 		return text.replace(/\b[2-7A-Z]{32}\b(?!(\?(amount|asset|device_address|single_address)|"))/g, function(address){
@@ -210,7 +210,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 	}
 	
 	function getPrivateProfileFromJsonBase64(privateProfileJsonBase64){
-		var privateProfile = require('byteballcore/private_profile.js');
+		var privateProfile = require('dag-pizza-dough/private_profile.js');
 		var objPrivateProfile = privateProfile.getPrivateProfileFromJsonBase64(privateProfileJsonBase64);
 		if (!objPrivateProfile)
 			return null;
@@ -240,7 +240,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 			objSignedMessage: objSignedMessage,
 			bValid: undefined
 		};
-		var validation = require('byteballcore/validation.js');
+		var validation = require('dag-pizza-dough/validation.js');
 		validation.validateSignedMessage(objSignedMessage, function(err){
 			info.bValid = !err;
 			if (err)
@@ -311,7 +311,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 	}
 	
 	function parsePaymentRequestQueryString(query_string){
-		var URI = require('byteballcore/uri.js');
+		var URI = require('dag-pizza-dough/uri.js');
 		var assocParams = URI.parseQueryString(query_string, '&amp;');
 		var strAmount = assocParams['amount'];
 		if (!strAmount)
@@ -379,7 +379,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 				amount /= unitValue;
 			return amount + ' ' + unitName;
 		}
-		else if (asset === constants.BLACKBYTES_ASSET){
+		else if (asset === constants.NOODLES_ASSET){
 			var walletSettings = configService.getSync().wallet.settings;
 			var bbUnitValue = walletSettings.bbUnitValue;
 			var bbUnitName = walletSettings.bbUnitName;
@@ -498,7 +498,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 			for (var i in messages) {
 				messages[i] = parseMessage(messages[i]);
 			}
-			var walletGeneral = require('byteballcore/wallet_general.js');
+			var walletGeneral = require('dag-pizza-dough/wallet_general.js');
 			walletGeneral.readMyAddresses(function(arrMyAddresses){
 				if (messages.length < limit)
 					historyEndForCorrespondent[correspondent.device_address] = true;

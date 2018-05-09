@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: byteball\n"
+"Project-Id-Version: dagpizza\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
-"X-Crowdin-Project: byteball\n"
+"X-Crowdin-Project: dagpizza\n"
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/i18n/po/template.pot\n"
 "Last-Translator: testz <testzcrypto@gmail.com>\n"
@@ -30,8 +30,8 @@ msgid "12 words separated by dashes"
 msgstr "12 Wörter durch Bindestriche getrennt"
 
 #: public/views/preferencesGlobal.html:135
-msgid "About Byteball"
-msgstr "Über Byteball"
+msgid "About DAG Pizza"
+msgstr "Über DAG Pizza"
 
 #: src/js/controllers/copayers.js:8
 #: src/js/controllers/preferencesDelete.js:9
@@ -109,8 +109,8 @@ msgid "All Wallet Addresses"
 msgstr "Alle Adressen dieses Wallets"
 
 #: public/views/translators.html:52
-msgid "All contributions to Byteball's translation are welcome. Sign up at crowdin.com and join the Byteball project at"
-msgstr "Jede Hilfe zur Übersetzung von Byteball ist willkommen. Meldet dich bei crowdin.com an und nehme an dem Byteball Projekt teil unter"
+msgid "All contributions to DAG Pizza's translation are welcome. Sign up at crowdin.com and join the DAG Pizza project at"
+msgstr "Jede Hilfe zur Übersetzung von DAG Pizza ist willkommen. Meldet dich bei crowdin.com an und nehme an dem DAG Pizza Projekt teil unter"
 
 #: public/views/modals/multi-payment.html:56
 msgid "Already Paid"
@@ -159,8 +159,8 @@ msgid "Asset"
 msgstr "Einheit"
 
 #: public/views/walletHome.html:496
-msgid "Attest profile data linked to any Byteball address."
-msgstr "Beglaubigen von Profildaten verlinkt mit einer Byteball Addresse."
+msgid "Attest profile data linked to any DAG Pizza address."
+msgstr "Beglaubigen von Profildaten verlinkt mit einer DAG Pizza Addresse."
 
 #: public/views/walletHome.html:333
 msgid "Attestation"
@@ -241,8 +241,8 @@ msgid "Browser unsupported"
 msgstr "Der eingesetzte Browser wird nicht unterstützt"
 
 #: public/views/modals/destination-address.html:119
-msgid "Byteball address"
-msgstr "Byteball Adresse"
+msgid "DAG Pizza address"
+msgstr "DAG Pizza Adresse"
 
 #: public/views/includes/password.html:24
 msgid "CANCEL"
@@ -416,8 +416,8 @@ msgid "Could not import. Check input file and password"
 msgstr "Import nicht möglich. Bitte Datei und Passwort überprüfen"
 
 #: src/js/controllers/walletHome.js:51
-msgid "Could not recognize a valid Byteball QR Code"
-msgstr "Es konnte kein gültiger Byteball QR-Code ermittelt werden"
+msgid "Could not recognize a valid DAG Pizza QR Code"
+msgstr "Es konnte kein gültiger DAG Pizza QR-Code ermittelt werden"
 
 #: src/js/controllers/walletHome.js:668
 msgid "Could not send payment"
@@ -545,8 +545,8 @@ msgid "Download CSV file"
 msgstr ".csv-Datei herunterladen"
 
 #: public/views/splash.html:26
-msgid "Download the entire Byteball database"
-msgstr "Lade die gesamte Byteball-Datenbank"
+msgid "Download the entire DAG Pizza database"
+msgstr "Lade die gesamte DAG Pizza-Datenbank"
 
 #: public/views/correspondentDevice.html:26
 #: public/views/modals/destination-address.html:38
@@ -749,8 +749,8 @@ msgid "Invite the other device"
 msgstr "Ein anderes Gerät einladen"
 
 #: public/views/backup.html:22
-msgid "Just the wallet seed is not enough.  With the seed alone, you won't be able to restore multisig wallets and private assets such as blackbytes."
-msgstr "Der Wallet-Seed allein reicht nicht aus, um etwa Multisig-Wallets oder private Assets wie etwa blackbytes wiederherstellen."
+msgid "Just the wallet seed is not enough.  With the seed alone, you won't be able to restore multisig wallets and private assets such as noodles."
+msgstr "Der Wallet-Seed allein reicht nicht aus, um etwa Multisig-Wallets oder private Assets wie etwa noodles wiederherstellen."
 
 #: public/views/splash.html:36
 msgid "Keep only data relevant to you"
@@ -807,8 +807,8 @@ msgid "Multidevice Wallet"
 msgstr "Mehrgeräte Brieftasche"
 
 #: public/views/walletHome.html:240
-msgid "My Byteball address"
-msgstr "Meine Byteball Adresse"
+msgid "My DAG Pizza address"
+msgstr "Meine DAG Pizza Adresse"
 
 #: public/views/correspondentDevice.html:297
 msgid "My recording preference"
@@ -975,8 +975,8 @@ msgid "Port"
 msgstr "Port"
 
 #: public/views/walletHome.html:502
-msgid "Post arbitrary key-value pairs of data into Byteball network."
-msgstr "Senden von Schlüssel-Wert Paaren in das Byteball Netzwerk."
+msgid "Post arbitrary key-value pairs of data into DAG Pizza network."
+msgstr "Senden von Schlüssel-Wert Paaren in das DAG Pizza Netzwerk."
 
 #: public/views/walletHome.html:493
 msgid "Post values into datafeeds manually, be an oracle."
@@ -996,8 +996,8 @@ msgid "Press again to exit"
 msgstr "Zum Beenden erneut drücken"
 
 #: public/views/recoveryFromSeed.html:40
-msgid "Private assets (such as blackbytes) are not recovered."
-msgstr "Private Guthaben (z. B. blackbytes) werden nicht wiederhergestellt."
+msgid "Private assets (such as noodles) are not recovered."
+msgstr "Private Guthaben (z. B. noodles) werden nicht wiederhergestellt."
 
 #: src/js/controllers/walletHome.js:1547
 #: src/js/controllers/walletHome.js:1621
@@ -1381,8 +1381,8 @@ msgid "This is a private asset, please send it only by clicking links in the cha
 msgstr "Dies ist eine privater Vermögenswert, bitte senden sie sie nur über einen Hyperlink im Chat oder zu ihrem eigenen Wallet."
 
 #: public/views/splash.html:28
-msgid "This option is better for privacy but will take  several gigabytes of storage and the initial sync will take several days.  CPU load will be high during sync."
-msgstr "Diese Option ist für Privatsphäre optimiert, benötigt aber mehrere Gigabytes an Speicherplatz, und die erste Synchronisation kann mehrere Tage dauern. Die CPU wird während dem Synchronisierungsvorgang ausgelastet sein."
+msgid "This option is better for privacy but will take  several gigapizza of storage and the initial sync will take several days.  CPU load will be high during sync."
+msgstr "Diese Option ist für Privatsphäre optimiert, benötigt aber mehrere Gigapizza an Speicherplatz, und die erste Synchronisation kann mehrere Tage dauern. Die CPU wird während dem Synchronisierungsvorgang ausgelastet sein."
 
 #: public/views/walletHome.html:417
 msgid "This payment is bound to a condition"
@@ -1414,20 +1414,20 @@ msgid "To be able to restore everything, please create a full backup (find the o
 msgstr "Um später alles wiederherstellen zu können, erstelle bitte ein komplettes Backup. Benutze dazu die entsprechende Option im Menü"
 
 #: public/views/walletHome.html:558
-msgid "To be able to send arbitrary data into Byteball network, please switch to a single-address wallet first or create one."
-msgstr "Um beliebige Daten in das Byteball Netzwerk zu senden, schalten Sie dieses Wallet auf Einzeladdresse um oder erstellen eins mit Einzeladdresse."
+msgid "To be able to send arbitrary data into DAG Pizza network, please switch to a single-address wallet first or create one."
+msgstr "Um beliebige Daten in das DAG Pizza Netzwerk zu senden, schalten Sie dieses Wallet auf Einzeladdresse um oder erstellen eins mit Einzeladdresse."
 
 #: public/views/walletHome.html:420
 msgid "To bind the payment to a condition, please click the peer's address in chat"
 msgstr "Um die Zahlung an eine Bedingung zu knüpfen, klicken Sie auf die Teilnehmer Adresse im Chatfenster"
 
 #: public/views/walletHome.html:390
-msgid "To byteball address"
-msgstr "An Byteball Addresse"
+msgid "To DAG Pizza address"
+msgstr "An DAG Pizza Addresse"
 
 #: public/views/walletHome.html:382
-msgid "To byteball address or email"
-msgstr "An Byteball Addresse oder Email"
+msgid "To DAG Pizza address or email"
+msgstr "An DAG Pizza Addresse oder Email"
 
 #: public/views/modals/tx-details.html:44
 msgid "To email"
@@ -1471,12 +1471,12 @@ msgid "Unconfirmed"
 msgstr "Unbestätigt"
 
 #: public/views/preferencesGlobal.html:53
-msgid "Unit for blackbytes"
-msgstr "Einheit für blackbytes"
+msgid "Unit for noodles"
+msgstr "Einheit für noodles"
 
 #: public/views/preferencesGlobal.html:46
-msgid "Unit for bytes"
-msgstr "Einheit für bytes"
+msgid "Unit for pizza"
+msgstr "Einheit für pizza"
 
 #: public/views/walletHome.html:197
 msgid "Unsent transactions"
@@ -1520,8 +1520,8 @@ msgid "WARNINGS:"
 msgstr "WARNUNGEN:"
 
 #: public/views/splash.html:53
-msgid "WELCOME TO BYTEBALL"
-msgstr "WILLKOMMEN BEI BYTEBALL"
+msgid "WELCOME TO DAG PIZZA"
+msgstr "WILLKOMMEN BEI DAG PIZZA"
 
 #: public/views/copayers.html:24
 msgid "Waiting for co-signers"
@@ -1557,8 +1557,8 @@ msgid "Wallet Name (at creation)"
 msgstr "Wallet-Name (bei der Erstellung)"
 
 #: src/js/services/profileService.js:436
-msgid "Wallet already in Byteball:"
-msgstr "Wallet bereits in Byteball:"
+msgid "Wallet already in DAG Pizza:"
+msgstr "Wallet bereits in DAG Pizza:"
 
 #: public/views/create.html:48
 msgid "Wallet name"
@@ -1750,8 +1750,8 @@ msgid "or"
 msgstr "oder"
 
 #: public/views/backup.html:24
-msgid "or backup all Byteball data at"
-msgstr "oder sichern Sie alle Byteball Daten nach"
+msgid "or backup all DAG Pizza data at"
+msgstr "oder sichern Sie alle DAG Pizza Daten nach"
 
 #: public/views/modals/offer-contract.html:51
 msgid "peer pays"

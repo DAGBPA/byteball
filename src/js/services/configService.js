@@ -18,7 +18,7 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 	  '#7A8C9E',
 	];
 
-  var constants = require('byteballcore/constants.js');
+  var constants = require('dag-pizza-dough/constants.js');
   var isTestnet = constants.version.match(/t$/);
   root.TIMESTAMPER_ADDRESS = isTestnet ? 'OPNUXBRSSQQGHKQNEPD2GLWQYEUY5XLD' : 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT';
 
@@ -56,7 +56,7 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 		totalCosigners: 6
 	},
 
-	hub: (constants.alt === '2' && isTestnet) ? 'byteball.org/bb-test' : 'byteball.org/bb',
+	hub: (constants.alt === '2' && isTestnet) ? 'dagpizza.org/bb-test' : 'dagpizza.org/bb',
 	emailAttestor: 'H5EZTQE7ABFH27AUDTQFMZIALANK6RBG',
 
 	// requires bluetooth permission on android
@@ -75,11 +75,11 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 	  idleDurationMin: 4,
 	  singleAddress: false,
 	  settings: {
-		unitName: 'bytes',
+		unitName: 'pizza',
 		unitValue: 1,
 		unitDecimals: 0,
 		unitCode: 'one',
-		bbUnitName: 'blackbytes',
+		bbUnitName: 'noodles',
 		bbUnitValue: 1,
 		bbUnitDecimals: 0,
 		bbUnitCode: 'one',
@@ -176,8 +176,8 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 			  _config.wallet.settings.unitCode = defaultConfig.wallet.settings.unitCode;
 		  }
 		  if (!_config.wallet.settings.unitValue){
-			  if(_config.wallet.settings.unitToBytes){
-				  _config.wallet.settings.unitValue = _config.wallet.settings.unitToBytes;
+			  if(_config.wallet.settings.unitToPizza){
+				  _config.wallet.settings.unitValue = _config.wallet.settings.unitToPizza;
 			  }else{
 				  _config.wallet.settings.unitValue = defaultConfig.wallet.settings.unitValue;
 			  }
@@ -214,7 +214,7 @@ angular.module('copayApp.services').factory('configService', function(storageSer
   
   function checkAndReplaceOldUnitCode(setting) {
 	  switch (setting.unitCode){
-		  case 'byte':
+		  case 'pizza':
 				setting.unitCode = 'one';
 				setting.unitValue = 1;
 		  	break;

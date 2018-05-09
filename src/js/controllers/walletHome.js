@@ -1,17 +1,17 @@
 'use strict';
 
-var constants = require('byteballcore/constants.js');
-var eventBus = require('byteballcore/event_bus.js');
-var breadcrumbs = require('byteballcore/breadcrumbs.js');
-var ValidationUtils = require('byteballcore/validation_utils.js');
+var constants = require('dag-pizza-dough/constants.js');
+var eventBus = require('dag-pizza-dough/event_bus.js');
+var breadcrumbs = require('dag-pizza-dough/breadcrumbs.js');
+var ValidationUtils = require('dag-pizza-dough/validation_utils.js');
 
 angular.module('copayApp.controllers')
 	.controller('walletHomeController', function($scope, $rootScope, $timeout, $filter, $modal, $log, notification, isCordova, profileService, lodash, configService, storageService, gettext, gettextCatalog, nodeWebkit, addressService, confirmDialog, animationService, addressbookService, correspondentListService, newVersion, autoUpdatingWitnessesList) {
 
 		var self = this;
 		var home = this;
-		var conf = require('byteballcore/conf.js');
-		var chatStorage = require('byteballcore/chat_storage.js');
+		var conf = require('dag-pizza-dough/conf.js');
+		var chatStorage = require('dag-pizza-dough/chat_storage.js');
 		this.protocol = conf.program;
 		$rootScope.hideMenuBar = false;
 		$rootScope.wpInputFocused = false;
@@ -19,7 +19,7 @@ angular.module('copayApp.controllers')
 		var configWallet = config.wallet;
 		var indexScope = $scope.index;
 		$scope.currentSpendUnconfirmed = configWallet.spendUnconfirmed;
-		var network = require('byteballcore/network.js');
+		var network = require('dag-pizza-dough/network.js');
 
 		// INIT
 		var walletSettings = configWallet.settings;
@@ -50,7 +50,7 @@ angular.module('copayApp.controllers')
 			if (form.address && form.address.$invalid && !self.blockUx) {
 				console.log("invalid address, resetting form");
 				self.resetForm();
-				self.error = gettext('Could not recognize a valid Byteball QR Code');
+				self.error = gettext('Could not recognize a valid DAG Pizza QR Code');
 			}
 		});
 
@@ -287,8 +287,8 @@ angular.module('copayApp.controllers')
 				$scope.address = address;
 				$scope.shared_address_cosigners = indexScope.shared_address_cosigners;
 
-				var walletGeneral = require('byteballcore/wallet_general.js');
-				var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses.js');
+				var walletGeneral = require('dag-pizza-dough/wallet_general.js');
+				var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses.js');
 				walletGeneral.readMyAddresses(function(arrMyAddresses) {
 					walletDefinedByAddresses.readSharedAddressDefinition(address, function(arrDefinition, creation_ts) {
 						walletDefinedByAddresses.readSharedAddressPeerAddresses(address, function(arrPeerAddresses) {
@@ -442,7 +442,7 @@ angular.module('copayApp.controllers')
 					var amountInSmallestUnits = profileService.getAmountInSmallestUnits(amount, asset);
 					$timeout(function() {
 						$scope.customizedAmountUnit =
-							amount + ' ' + ((asset === 'base') ? $scope.unitName : (asset === constants.BLACKBYTES_ASSET ? $scope.bbUnitName : (assetInfo.name || 'of ' + asset)));
+							amount + ' ' + ((asset === 'base') ? $scope.unitName : (asset === constants.NOODLES_ASSET ? $scope.bbUnitName : (assetInfo.name || 'of ' + asset)));
 						$scope.amountInSmallestUnits = amountInSmallestUnits;
 						$scope.asset_param = (asset === 'base') ? '' : '&asset=' + encodeURIComponent(asset);
 					}, 1);
@@ -526,7 +526,7 @@ angular.module('copayApp.controllers')
 		};
 
 		function claimTextCoin(mnemonic, addr) {
-			var wallet = require('byteballcore/wallet.js');
+			var wallet = require('dag-pizza-dough/wallet.js');
 			wallet.receiveTextCoin(mnemonic, addr, function(err, unit, asset) {
 				$rootScope.$emit('closeModal');
 				if (err) {
@@ -720,8 +720,8 @@ angular.module('copayApp.controllers')
 		function getShareMessage(amount, mnemonic, asset) {
 			var usd_amount_str = "";
 			if (!asset || asset == "base") {
-				if (network.exchangeRates['GBYTE_USD']) {
-					usd_amount_str = " (≈" + ((amount/1e9)*network.exchangeRates['GBYTE_USD']).toLocaleString([], {maximumFractionDigits: 2}) + " USD)";
+				if (network.exchangeRates['GPIZZA_USD']) {
+					usd_amount_str = " (≈" + ((amount/1e9)*network.exchangeRates['GPIZZA_USD']).toLocaleString([], {maximumFractionDigits: 2}) + " USD)";
 				}
 				amount = (amount/1e9).toLocaleString([], {maximumFractionDigits: 9});
 				asset = "GB";
@@ -734,8 +734,8 @@ angular.module('copayApp.controllers')
 				}
 			}
 			return {
-				message: "Here is your link to receive " + amount + " " + asset + usd_amount_str +": https://byteball.org/#textcoin?" + mnemonic,
-				subject: "Byteball user beamed you money"
+				message: "Here is your link to receive " + amount + " " + asset + usd_amount_str +": https://dagpizza.org/#textcoin?" + mnemonic,
+				subject: "DAG Pizza user beamed you money"
 			}
 		}
 
@@ -830,7 +830,7 @@ angular.module('copayApp.controllers')
 				return self.setSendError(gettext(msg));
 			}
 
-			var wallet = require('byteballcore/wallet.js');
+			var wallet = require('dag-pizza-dough/wallet.js');
 			var assetInfo = $scope.index.arrBalances[$scope.index.assetIndex];
 			var asset = assetInfo.asset;
 			console.log("asset " + asset);
@@ -865,7 +865,7 @@ angular.module('copayApp.controllers')
 					return self.setSendError("private assets can not be sent as textcoins yet");
 				if (asset === "base")
 					amount *= unitValue;
-				else if (asset === constants.BLACKBYTES_ASSET)
+				else if (asset === constants.NOODLES_ASSET)
 					amount *= bbUnitValue;
 				else if (assetInfo.decimals)
 					amount *= Math.pow(10, assetInfo.decimals);
@@ -896,7 +896,7 @@ angular.module('copayApp.controllers')
 						return;
 					}
 					
-					if (isEmail){ // try to replace email with attested BB address
+					if (isEmail){ // try to replace email with attested Noodles address
 						var email = address.replace(/^textcoin:/, '').toLowerCase();
 						var bb_address = indexScope.assocAddressesByEmail[email];
 						console.log('email '+email+': bb_address='+bb_address);
@@ -923,17 +923,17 @@ angular.module('copayApp.controllers')
 							throw Error("unrecognized bb_address: "+bb_address);
 					}
 
-					var device = require('byteballcore/device.js');
+					var device = require('dag-pizza-dough/device.js');
 					if (self.binding) {
 						if (isTextcoin) {
 							delete self.current_payment_key;
 							indexScope.setOngoingProcess(gettext('sending'), false);
-							return self.setSendError("you can send bound payments to byteball adresses only");
+							return self.setSendError("you can send bound payments to DAG Pizza adresses only");
 						}
 						if (!recipient_device_address)
 							throw Error('recipient device address not known');
-						var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses.js');
-						var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+						var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses.js');
+						var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
 						var my_address;
 						// never reuse addresses as the required output could be already present
 						useOrIssueNextAddress(fc.credentials.walletId, 0, function(addressInfo) {
@@ -1088,7 +1088,7 @@ angular.module('copayApp.controllers')
 							self.resetForm();
 							$rootScope.$emit("NewOutgoingTx");
 							if (original_address){
-								var db = require('byteballcore/db.js');
+								var db = require('dag-pizza-dough/db.js');
 								db.query("INSERT INTO original_addresses (unit, address, original_address) VALUES(?,?,?)", 
 									[unit, to_address, original_address]);
 							}
@@ -1097,7 +1097,7 @@ angular.module('copayApp.controllers')
 								if (binding && binding.reverseAmount) { // create a request for reverse payment
 									if (!my_address)
 										throw Error('my address not known');
-									var paymentRequestCode = 'byteball:' + my_address + '?amount=' + binding.reverseAmount + '&asset=' + encodeURIComponent(binding.reverseAsset);
+									var paymentRequestCode = 'dagpizza:' + my_address + '?amount=' + binding.reverseAmount + '&asset=' + encodeURIComponent(binding.reverseAsset);
 									var paymentRequestText = '[reverse payment](' + paymentRequestCode + ')';
 									device.sendMessageToDevice(recipient_device_address, 'text', paymentRequestText);
 									var body = correspondentListService.formatOutgoingMessage(paymentRequestText);
@@ -1168,7 +1168,7 @@ angular.module('copayApp.controllers')
 		}
 
 		this.submitData = function() {
-			var objectHash = require('byteballcore/object_hash.js');
+			var objectHash = require('dag-pizza-dough/object_hash.js');
 			var fc = profileService.focusedClient;
 			var value = {};
 			var app;
@@ -1322,7 +1322,7 @@ angular.module('copayApp.controllers')
 						};
 						if (b.asset === 'base')
 							info.displayName = self.unitName;
-						else if (b.asset === constants.BLACKBYTES_ASSET)
+						else if (b.asset === constants.NOODLES_ASSET)
 							info.displayName = self.bbUnitName;
 						else if (profileService.assetMetadata[b.asset])
 							info.displayName = profileService.assetMetadata[b.asset].name;
@@ -1523,7 +1523,7 @@ angular.module('copayApp.controllers')
 			}
 			else {
 				var full_amount = assetInfo.stable;
-				if (assetInfo.asset === constants.BLACKBYTES_ASSET)
+				if (assetInfo.asset === constants.NOODLES_ASSET)
 					full_amount /= this.bbUnitValue;
 				else if (assetInfo.decimals)
 					full_amount /= Math.pow(10, assetInfo.decimals);
@@ -1540,7 +1540,7 @@ angular.module('copayApp.controllers')
 
 		this.setFromUri = function(uri) {
 			var objRequest;
-			require('byteballcore/uri.js')
+			require('dag-pizza-dough/uri.js')
 				.parseUri(uri, {
 					ifError: function(err) {},
 					ifOk: function(_objRequest) {
@@ -1592,7 +1592,7 @@ angular.module('copayApp.controllers')
 				$scope.color = fc.backgroundColor;
 				$scope.n = fc.credentials.n;
 				$scope.exchangeRates = network.exchangeRates;
-				$scope.BLACKBYTES_ASSET = constants.BLACKBYTES_ASSET;
+				$scope.NOODLES_ASSET = constants.NOODLES_ASSET;
 
 				$scope.shareAgain = function() {
 					if (isCordova) {
@@ -1607,7 +1607,7 @@ angular.module('copayApp.controllers')
 
 				$scope.eraseTextcoin = function() {
 					(function(){
-						var wallet = require('byteballcore/wallet.js');
+						var wallet = require('dag-pizza-dough/wallet.js');
 						var ModalInstanceCtrl = function($scope, $modalInstance, $sce) {
 							$scope.title = $sce.trustAsHtml(gettextCatalog.getString('Deleting the textcoin will remove the ability to claim it back or resend'));
 							$scope.cancel_button_class = 'light-gray outline';
@@ -1652,7 +1652,7 @@ angular.module('copayApp.controllers')
 
 				$scope.openInExplorer = function() {
 					var testnet = home.isTestnet ? 'testnet' : '';
-					var url = 'https://' + testnet + 'explorer.byteball.org/#' + btx.unit;
+					var url = 'https://' + testnet + 'explorer.dagpizza.org/#' + btx.unit;
 					if (typeof nw !== 'undefined')
 						nw.Shell.openExternal(url);
 					else if (isCordova)
@@ -1669,9 +1669,9 @@ angular.module('copayApp.controllers')
 				};
 
 				$scope.reSendPrivateMultiSigPayment = function() {
-					var indivisible_asset = require('byteballcore/indivisible_asset');
-					var wallet_defined_by_keys = require('byteballcore/wallet_defined_by_keys');
-					var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses');
+					var indivisible_asset = require('dag-pizza-dough/indivisible_asset');
+					var wallet_defined_by_keys = require('dag-pizza-dough/wallet_defined_by_keys');
+					var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses');
 					var fc = profileService.focusedClient;
 
 					function success() {
@@ -1743,8 +1743,8 @@ angular.module('copayApp.controllers')
 				};
 
 				$scope.sendPrivatePayments = function(correspondent) {
-					var indivisible_asset = require('byteballcore/indivisible_asset');
-					var wallet_general = require('byteballcore/wallet_general');
+					var indivisible_asset = require('dag-pizza-dough/indivisible_asset');
+					var wallet_general = require('dag-pizza-dough/wallet_general');
 					indivisible_asset.restorePrivateChains(btx.asset, btx.unit, btx.addressTo, function(arrRecipientChains, arrCosignerChains) {
 						wallet_general.sendPrivatePayments(correspondent.device_address, arrRecipientChains, true, null, function() {
 							modalInstance.dismiss('cancel');

@@ -36,28 +36,28 @@ angular.module('copayApp.controllers').controller('preferencesUnitController',
         code: 'btc',
       }
       , */{
-        name: 'bytes',
-        shortName: 'bytes',
+        name: 'pizza',
+        shortName: 'pizza',
         value: 1,
         decimals: 0,
         code: 'one',
       }
       , {
-        name: 'kBytes (1,000 bytes)',
+        name: 'kPizza (1,000 pizza)',
         shortName: 'kB',
         value: 1000,
         decimals: 3,
         code: 'kilo',
       }
       , {
-        name: 'MBytes (1,000,000 bytes)',
+        name: 'MPizza (1,000,000 pizza)',
         shortName: 'MB',
         value: 1000000,
         decimals: 6,
         code: 'mega',
       }
       , {
-        name: 'GBytes (1,000,000,000 bytes)',
+        name: 'GPizza (1,000,000,000 pizza)',
         shortName: 'GB',
         value: 1000000000,
         decimals: 9,

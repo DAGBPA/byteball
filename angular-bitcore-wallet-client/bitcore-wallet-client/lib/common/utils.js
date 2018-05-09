@@ -14,8 +14,8 @@ function Utils() {};
 
 
 
-Utils.formatAmount = function(bytes, unitCode, opts) {
-  if(!_.isNumber(bytes)) throw new Error("Variable should be a Number.");
+Utils.formatAmount = function(pizza, unitCode, opts) {
+  if(!_.isNumber(pizza)) throw new Error("Variable should be a Number.");
   if(!Constants.UNITS[unitCode]) throw new Error("Illegal Argument.");
 
   function addSeparators(nStr, thousands, decimal, minDecimals) {
@@ -42,9 +42,9 @@ Utils.formatAmount = function(bytes, unitCode, opts) {
   opts = opts || {};
 
   var u = Constants.UNITS[unitCode];
-  var intAmountLength = Math.floor(bytes / u.value).toString().length;
+  var intAmountLength = Math.floor(pizza / u.value).toString().length;
   var digits = intAmountLength >= 6 || unitCode == 'one' ? 0 : 6 - intAmountLength;
-  var amount = opts.dontRound ? (bytes / u.value).toString() : (bytes / u.value).toFixed(digits);
+  var amount = opts.dontRound ? (pizza / u.value).toString() : (pizza / u.value).toFixed(digits);
   return addSeparators(amount, opts.thousandsSeparator || ',', opts.decimalSeparator || '.', u.minDecimals);
 };
 
