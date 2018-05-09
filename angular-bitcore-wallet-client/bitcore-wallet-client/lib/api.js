@@ -2,16 +2,16 @@
 'use strict';
 
 if (process.browser){
-	var conf = require('byteballcore/conf.js');
+	var conf = require('dag-pizza-dough/conf.js');
 	var appPackageJson = require('../../../package.json');
 	conf.program = appPackageJson.name;
 	conf.program_version = appPackageJson.version;
 }
 
 var walletDefinedByKeys;
-var ecdsaSig = require('byteballcore/signature.js');
-var breadcrumbs = require('byteballcore/breadcrumbs.js');
-var constants = require('byteballcore/constants.js');
+var ecdsaSig = require('dag-pizza-dough/signature.js');
+var breadcrumbs = require('dag-pizza-dough/breadcrumbs.js');
+var constants = require('dag-pizza-dough/constants.js');
 
 var _ = require('lodash');
 var $ = require('preconditions').singleton();
@@ -39,7 +39,7 @@ function API(opts) {
 	opts = opts || {};
 	this.verbose = !!opts.verbose;
 	this.timeout = opts.timeout || 50000;
-	walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+	walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
 
 	if (this.verbose)
 		log.setLevel('debug');
@@ -518,19 +518,26 @@ API.prototype.sendPayment = function(asset, to_address, amount, arrSigningDevice
 	}, cb);
 }*/
 
+
+API.prototype.getSignerWithLocalPrivateKey = function(){
+    var self = this;
+	return function(wallet_id, account, is_change, address_index, text_to_sign, handleSig){
+		var coin = (self.credentials.network == 'livenet' ? "0" : "1");
+		var path = "m/44'/" + coin + "'/" + account + "'/"+is_change+"/"+address_index;
+		var xPrivKey = new Bitcore.HDPrivateKey.fromString(self.credentials.xPrivKey);
+		var privateKey = xPrivKey.derive(path).privateKey;
+		//var privKeyBuf = privateKey.toBuffer();
+		var privKeyBuf = privateKey.bn.toBuffer({size:32}); // https://github.com/bitpay/bitcore-lib/issues/47
+		handleSig(ecdsaSig.sign(text_to_sign, privKeyBuf));
+	};
+};
+    
+
 API.prototype.sendMultiPayment = function(opts, cb) {
     var self = this;
-    var coin = (this.credentials.network == 'livenet' ? "0" : "1");
-	var Wallet = require('byteballcore/wallet.js');
-    
-    opts.signWithLocalPrivateKey = function(wallet_id, account, is_change, address_index, text_to_sign, handleSig){
-        var path = "m/44'/" + coin + "'/" + account + "'/"+is_change+"/"+address_index;
-        var xPrivKey = new Bitcore.HDPrivateKey.fromString(self.credentials.xPrivKey);
-        var privateKey = xPrivKey.derive(path).privateKey;
-        //var privKeyBuf = privateKey.toBuffer();
-        var privKeyBuf = privateKey.bn.toBuffer({size:32}); // https://github.com/bitpay/bitcore-lib/issues/47
-        handleSig(ecdsaSig.sign(text_to_sign, privKeyBuf));
-    };
+	var Wallet = require('dag-pizza-dough/wallet.js');
+	
+	opts.signWithLocalPrivateKey = this.getSignerWithLocalPrivateKey();
     
 	if (opts.shared_address){
 		opts.paying_addresses = [opts.shared_address];
@@ -559,6 +566,11 @@ API.prototype.sendMultiPayment = function(opts, cb) {
 	}
 };
 
+API.prototype.signMessage = function(from_address, message, arrSigningDeviceAddresses, cb) {
+	var Wallet = require('dag-pizza-dough/wallet.js');
+	Wallet.signMessage(from_address, message, arrSigningDeviceAddresses, this.getSignerWithLocalPrivateKey(), cb);
+};
+
 API.prototype.getAddresses = function(opts, cb) {
     var coin = (this.credentials.network == 'livenet' ? "0" : "1");
     var self = this;
@@ -580,12 +592,12 @@ API.prototype.getAddresses = function(opts, cb) {
  * @param {Callback} cb
  */
 API.prototype.getBalance = function(shared_address, cb) {
-	var Wallet = require('byteballcore/wallet.js');
+	var Wallet = require('dag-pizza-dough/wallet.js');
 	$.checkState(this.credentials && this.credentials.isComplete());
 	var walletId = this.credentials.walletId;
 	Wallet.readBalance(shared_address || walletId, function(assocBalances){
-		if (!assocBalances[constants.BLACKBYTES_ASSET])
-			assocBalances[constants.BLACKBYTES_ASSET] = {is_private: 1, stable: 0, pending: 0};
+		if (!assocBalances[constants.NOODLES_ASSET])
+			assocBalances[constants.NOODLES_ASSET] = {is_private: 1, stable: 0, pending: 0};
 		Wallet.readSharedBalance(walletId, function(assocSharedBalances){
 			var assocSharedAddresses = {}; // all shared addresses
 			for (var asset in assocSharedBalances){
@@ -603,7 +615,7 @@ API.prototype.getBalance = function(shared_address, cb) {
 				}
 			var arrAssets = [];
 			for (var asset in assocBalances)
-				if (asset !== 'base' && asset !== constants.BLACKBYTES_ASSET)
+				if (asset !== 'base' && asset !== constants.NOODLES_ASSET)
 					arrAssets.push(asset);
 			if (arrAssets.length === 0)
 				return cb(null, assocBalances, assocSharedBalances);
@@ -620,7 +632,7 @@ API.prototype.getBalance = function(shared_address, cb) {
 };
 
 API.prototype.getListOfBalancesOnAddresses = function(cb) {
-	var Wallet = require('byteballcore/wallet.js');
+	var Wallet = require('dag-pizza-dough/wallet.js');
 	$.checkState(this.credentials && this.credentials.isComplete());
 	var walletId = this.credentials.walletId;
 	Wallet.readBalancesOnAddresses(walletId, function(assocBalances) {
@@ -629,7 +641,7 @@ API.prototype.getListOfBalancesOnAddresses = function(cb) {
 };
 
 API.prototype.getTxHistory = function(asset, shared_address, cb) {
-	var Wallet = require('byteballcore/wallet.js');
+	var Wallet = require('dag-pizza-dough/wallet.js');
 	$.checkState(this.credentials && this.credentials.isComplete());
 	var opts = {asset: asset};
 	if (shared_address)
@@ -643,8 +655,8 @@ API.prototype.getTxHistory = function(asset, shared_address, cb) {
 
 API.prototype.initDeviceProperties = function(xPrivKey, device_address, hub, deviceName) {
     console.log("initDeviceProperties");
-    var device = require('byteballcore/device.js');
-    var lightWallet = require('byteballcore/light_wallet.js');
+    var device = require('dag-pizza-dough/device.js');
+    var lightWallet = require('dag-pizza-dough/light_wallet.js');
     if (device_address)
         device.setDeviceAddress(device_address);
     device.setDeviceName(deviceName);

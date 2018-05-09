@@ -1,19 +1,19 @@
 'use strict';
 
 var async = require('async');
-var constants = require('byteballcore/constants.js');
-var mutex = require('byteballcore/mutex.js');
-var eventBus = require('byteballcore/event_bus.js');
-var objectHash = require('byteballcore/object_hash.js');
-var ecdsaSig = require('byteballcore/signature.js');
-var breadcrumbs = require('byteballcore/breadcrumbs.js');
+var constants = require('dag-pizza-dough/constants.js');
+var mutex = require('dag-pizza-dough/mutex.js');
+var eventBus = require('dag-pizza-dough/event_bus.js');
+var objectHash = require('dag-pizza-dough/object_hash.js');
+var ecdsaSig = require('dag-pizza-dough/signature.js');
+var breadcrumbs = require('dag-pizza-dough/breadcrumbs.js');
 var Bitcore = require('bitcore-lib');
 var EventEmitter = require('events').EventEmitter;
 
 angular.module('copayApp.controllers').controller('indexController', function($rootScope, $scope, $log, $filter, $timeout, lodash, go, profileService, configService, isCordova, storageService, addressService, gettext, gettextCatalog, amMoment, nodeWebkit, addonManager, txFormatService, uxLanguage, $state, isMobile, addressbookService, notification, animationService, $modal, bwcService, backButton, pushNotificationsService) {
   breadcrumbs.add('index.js');
   var self = this;
-  self.BLACKBYTES_ASSET = constants.BLACKBYTES_ASSET;
+  self.NOODLES_ASSET = constants.NOODLES_ASSET;
   self.isCordova = isCordova;
   self.isSafari = isMobile.Safari();
   self.onGoingProcess = {};
@@ -24,6 +24,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
   self.assetIndex = 0;
   self.$state = $state;
   self.usePushNotifications = isCordova && !isMobile.Windows() &&  isMobile.Android();
+  self.assocAddressesByEmail = {};
     /*
     console.log("process", process.env);
     var os = require('os');
@@ -36,7 +37,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 
     
     function updatePublicKeyRing(walletClient, onDone){
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
         walletDefinedByKeys.readCosigners(walletClient.credentials.walletId, function(arrCosigners){
             var arrApprovedDevices = arrCosigners.
                 filter(function(cosigner){ return cosigner.approval_date; }).
@@ -58,8 +59,8 @@ angular.module('copayApp.controllers').controller('indexController', function($r
     }
     
     function sendBugReport(error_message, error_object){
-        var conf = require('byteballcore/conf.js');
-        var network = require('byteballcore/network.js');
+        var conf = require('dag-pizza-dough/conf.js');
+        var network = require('dag-pizza-dough/network.js');
         var bug_sink_url = conf.WS_PROTOCOL + (conf.bug_sink_url || configService.getSync().hub);
         network.findOutboundPeerOrConnect(bug_sink_url, function(err, ws){
             if (err)
@@ -79,7 +80,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 	self.sendBugReport = sendBugReport;
 	
 	if (isCordova && constants.version === '1.0'){
-        var db = require('byteballcore/db.js');
+        var db = require('dag-pizza-dough/db.js');
 		db.query("SELECT 1 FROM units WHERE version!=? LIMIT 1", [constants.version], function(rows){
 			if (rows.length > 0){
 				self.showErrorPopup("Looks like you have testnet data.  Please remove the app and reinstall.", function() {
@@ -111,7 +112,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 		if (error_object && error_object.bIgnore)
 			return;
         self.showErrorPopup(error_message, function() {
-			var db = require('byteballcore/db.js');
+			var db = require('dag-pizza-dough/db.js');
 			db.close();
             if (self.isCordova && navigator && navigator.app) // android
                 navigator.app.exitApp();
@@ -123,10 +124,10 @@ angular.module('copayApp.controllers').controller('indexController', function($r
     });
 	
 	function readLastDateString(cb){
-		var conf = require('byteballcore/conf.js');
+		var conf = require('dag-pizza-dough/conf.js');
 		if (conf.storage !== 'sqlite')
 			return cb();
-		var db = require('byteballcore/db.js');
+		var db = require('dag-pizza-dough/db.js');
 		db.query(
 			"SELECT int_value FROM unit_authors JOIN data_feeds USING(unit) \n\
 			WHERE address=? AND feed_name='timestamp' \n\
@@ -142,7 +143,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 	}
 	
 	function readSyncPercent(cb){
-		var db = require('byteballcore/db.js');
+		var db = require('dag-pizza-dough/db.js');
 		db.query("SELECT COUNT(1) AS count_left FROM catchup_chain_balls", function(rows){
 			var count_left = rows[0].count_left;
 			if (count_left === 0)
@@ -223,7 +224,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
     });
 
     eventBus.on("refused_to_sign", function(device_address){
-		var device = require('byteballcore/device.js');
+		var device = require('dag-pizza-dough/device.js');
         device.readCorrespondent(device_address, function(correspondent){
             notification.success(gettextCatalog.getString('Refused'), correspondent.name + " refused to sign the transaction");
         });
@@ -260,7 +261,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
             return;
         var walletName = client.credentials.walletName;
         updatePublicKeyRing(client);
-		var device = require('byteballcore/device.js');
+		var device = require('dag-pizza-dough/device.js');
         device.readCorrespondent(device_address, function(correspondent){
             notification.success(gettextCatalog.getString('Success'), "Wallet "+walletName+" approved by "+correspondent.name);
         });
@@ -271,7 +272,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
         if (!client) // already deleted (maybe declined by another device)
             return;
         var walletName = client.credentials.walletName;
-		var device = require('byteballcore/device.js');
+		var device = require('dag-pizza-dough/device.js');
         device.readCorrespondent(device_address, function(correspondent){
             notification.info(gettextCatalog.getString('Declined'), "Wallet "+walletName+" declined by "+(correspondent ? correspondent.name : 'peer'));
         });
@@ -297,8 +298,8 @@ angular.module('copayApp.controllers').controller('indexController', function($r
     
     // in arrOtherCosigners, 'other' is relative to the initiator
     eventBus.on("create_new_wallet", function(walletId, arrWalletDefinitionTemplate, arrDeviceAddresses, walletName, arrOtherCosigners, isSingleAddress){
-		var device = require('byteballcore/device.js');
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var device = require('dag-pizza-dough/device.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
         device.readCorrespondentsByDeviceAddresses(arrDeviceAddresses, function(arrCorrespondentInfos){
             // my own address is not included in arrCorrespondentInfos because I'm not my correspondent
             var arrNames = arrCorrespondentInfos.map(function(correspondent){ return correspondent.name; });
@@ -383,8 +384,8 @@ angular.module('copayApp.controllers').controller('indexController', function($r
             console.log("refused signature");
         }
         
-		var bbWallet = require('byteballcore/wallet.js');
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var bbWallet = require('dag-pizza-dough/wallet.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
         var unit = objUnit.unit;
         var credentials = lodash.find(profileService.profile.credentials, {walletId: objAddress.wallet});
         mutex.lock(["signing_request-"+unit], function(unlock){
@@ -398,6 +399,23 @@ angular.module('copayApp.controllers').controller('indexController', function($r
                     refuseSignature();
                 return unlock();
             }
+			
+			if (objUnit.signed_message){
+				var question = gettextCatalog.getString('Sign message "'+objUnit.signed_message+'" by address '+objAddress.address+'?');
+				requestApproval(question, {
+					ifYes: function(){
+						createAndSendSignature();
+						unlock();
+					},
+					ifNo: function(){
+						// do nothing
+						console.log("===== NO CLICKED");
+						refuseSignature();
+						unlock();
+					}
+				});
+				return;
+			}
             
             walletDefinedByKeys.readChangeAddresses(objAddress.wallet, function(arrChangeAddressInfos){
                 var arrAuthorAddresses = objUnit.authors.map(function(author){ return author.address; });
@@ -442,7 +460,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 							var assetInfo = self.arrBalances[assetIndex];
 							if (asset === 'base')
 								currency = config.unitName;
-							else if(asset === constants.BLACKBYTES_ASSET)
+							else if(asset === constants.NOODLES_ASSET)
 								currency = config.bbUnitName;
 							else if (assetInfo.name)
 								currency = assetInfo.name;
@@ -546,13 +564,13 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 			var objSharedWallet = {};
 			objSharedWallet.shared_address = sa;
 			objSharedWallet.total = assocSharedByAddress[sa];
-			if (asset === 'base' || asset === constants.BLACKBYTES_ASSET || $scope.mainWalletBalanceInfo.name)
+			if (asset === 'base' || asset === constants.NOODLES_ASSET || $scope.mainWalletBalanceInfo.name)
 				objSharedWallet.totalStr = profileService.formatAmountWithUnit(assocSharedByAddress[sa], asset);
 			arrSharedWallets.push(objSharedWallet);
 		}
 		$scope.arrSharedWallets = arrSharedWallets;
 
-		var walletDefinedByAddresses = require('byteballcore/wallet_defined_by_addresses.js');
+		var walletDefinedByAddresses = require('dag-pizza-dough/wallet_defined_by_addresses.js');
 		async.eachSeries(
 			arrSharedWallets,
 			function(objSharedWallet, cb){
@@ -616,6 +634,46 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 
   };
 	
+	
+	self.resolveEmailToAddress = function(email, onDone){
+		function setResult(result){
+			self.assocAddressesByEmail[email] = result;
+			$timeout(onDone);
+		}
+		var conf = require('dag-pizza-dough/conf.js');
+		var db = require('dag-pizza-dough/db.js');
+		var network = require('dag-pizza-dough/network.js');
+		var emailAttestor = configService.getSync().emailAttestor;
+		if (!emailAttestor)
+			return setResult('none');
+		db.query(
+			"SELECT address, is_stable FROM attested_fields CROSS JOIN units USING(unit) \n\
+			WHERE attestor_address=? AND field='email' AND value=? ORDER BY attested_fields.rowid DESC LIMIT 1", 
+			[emailAttestor, email], 
+			function(rows){
+				if (rows.length > 0)
+					return setResult( (!conf.bLight || rows[0].is_stable) ? rows[0].address : 'unknown' );
+				// not found
+				if (!conf.bLight)
+					return setResult('none');
+				// light
+				var params = {attestor_address: emailAttestor, field: 'email', value: email};
+				network.requestFromLightVendor('light/get_attestation', params, function(ws, request, response){
+					if (response.error)
+						return setResult('unknown');
+					var attestation_unit = response;
+					if (attestation_unit === "") // no attestation
+						return setResult('none');
+					network.requestHistoryFor([attestation_unit], [], function(err){
+						if (err)
+							return setResult('unknown');
+						// now attestation_unit is in the db (stable or unstable)
+						self.resolveEmailToAddress(email, onDone);
+					});
+				});
+			}
+		);
+	}
 
     
   self.goHome = function() {
@@ -678,9 +736,9 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 	breadcrumbs.add('setFocusedWallet '+fc.credentials.walletId);
 
     // Clean status
-    self.totalBalanceBytes = null;
-    self.lockedBalanceBytes = null;
-    self.availableBalanceBytes = null;
+    self.totalBalancePizza = null;
+    self.lockedBalancePizza = null;
+    self.availableBalancePizza = null;
     self.pendingAmount = null;
     self.spendUnconfirmed = null;
 
@@ -730,7 +788,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
         self.setAddressbook();
 
         console.log("reading cosigners");
-		var walletDefinedByKeys = require('byteballcore/wallet_defined_by_keys.js');
+		var walletDefinedByKeys = require('dag-pizza-dough/wallet_defined_by_keys.js');
         walletDefinedByKeys.readCosigners(self.walletId, function(arrCosignerInfos){
             self.copayers = arrCosignerInfos;
 			$timeout(function(){
@@ -839,7 +897,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
         return breadcrumbs.add('updateAll not complete yet');
       
     // reconnect if lost connection
-	var device = require('byteballcore/device.js');
+	var device = require('dag-pizza-dough/device.js');
     device.loginToHub();
 
     $timeout(function() {
@@ -990,7 +1048,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 		}
 		if (balanceInfo.name)
 			profileService.assetMetadata[asset] = {decimals: balanceInfo.decimals, name: balanceInfo.name};
-        if (asset === "base" || asset == self.BLACKBYTES_ASSET || balanceInfo.name){
+        if (asset === "base" || asset == self.NOODLES_ASSET || balanceInfo.name){
 			balanceInfo.totalStr = profileService.formatAmountWithUnit(balanceInfo.total, asset);
 			balanceInfo.totalStrWithoutUnit = profileService.formatAmount(balanceInfo.total, asset);
 			balanceInfo.stableStr = profileService.formatAmountWithUnit(balanceInfo.stable, asset);
@@ -998,16 +1056,22 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 			if (typeof balanceInfo.shared === 'number')
 				balanceInfo.sharedStr = profileService.formatAmountWithUnitIfShort(balanceInfo.shared, asset);
 			if (!balanceInfo.name){
-				if (asset === "base")
+				if (!Math.log10) // android 4.4
+					Math.log10 = function(x) { return Math.log(x) * Math.LOG10E; };
+				if (asset === "base"){
 					balanceInfo.name = self.unitName;
-				else if (asset === self.BLACKBYTES_ASSET)
+					balanceInfo.decimals = Math.round(Math.log10(config.unitValue));
+				}
+				else if (asset === self.NOODLES_ASSET){
 					balanceInfo.name = self.bbUnitName;
+					balanceInfo.decimals = Math.round(Math.log10(config.bbUnitValue));
+				}
 			}
         }
         self.arrBalances.push(balanceInfo);
     }
     self.assetIndex = self.assetIndex || 0;
-	if (!self.arrBalances[self.assetIndex]) // if no such index in the subwallet, reset to bytes
+	if (!self.arrBalances[self.assetIndex]) // if no such index in the subwallet, reset to pizza
 		self.assetIndex = 0;
 	if (!self.shared_address)
 		self.arrMainWalletBalances = self.arrBalances;
@@ -1018,21 +1082,21 @@ angular.module('copayApp.controllers').controller('indexController', function($r
       /*
     // SAT
     if (self.spendUnconfirmed) {
-      self.totalBalanceBytes = balance.totalAmount;
-      self.lockedBalanceBytes = balance.lockedAmount || 0;
-      self.availableBalanceBytes = balance.availableAmount || 0;
+      self.totalBalancePizza = balance.totalAmount;
+      self.lockedBalancePizza = balance.lockedAmount || 0;
+      self.availableBalancePizza = balance.availableAmount || 0;
       self.pendingAmount = null;
     } else {
-      self.totalBalanceBytes = balance.totalConfirmedAmount;
-      self.lockedBalanceBytes = balance.lockedConfirmedAmount || 0;
-      self.availableBalanceBytes = balance.availableConfirmedAmount || 0;
+      self.totalBalancePizza = balance.totalConfirmedAmount;
+      self.lockedBalancePizza = balance.lockedConfirmedAmount || 0;
+      self.availableBalancePizza = balance.availableConfirmedAmount || 0;
       self.pendingAmount = balance.totalAmount - balance.totalConfirmedAmount;
     }
 
     //STR
-    self.totalBalanceStr = profileService.formatAmount(self.totalBalanceBytes) + ' ' + self.unitName;
-    self.lockedBalanceStr = profileService.formatAmount(self.lockedBalanceBytes) + ' ' + self.unitName;
-    self.availableBalanceStr = profileService.formatAmount(self.availableBalanceBytes) + ' ' + self.unitName;
+    self.totalBalanceStr = profileService.formatAmount(self.totalBalancePizza) + ' ' + self.unitName;
+    self.lockedBalanceStr = profileService.formatAmount(self.lockedBalancePizza) + ' ' + self.unitName;
+    self.availableBalanceStr = profileService.formatAmount(self.availableBalancePizza) + ' ' + self.unitName;
 
     if (self.pendingAmount) {
       self.pendingAmountStr = profileService.formatAmount(self.pendingAmount) + ' ' + self.unitName;
@@ -1113,7 +1177,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
           $log.debug('Wallet Transaction History:', txs);
 
           var data = txs;
-          var filename = 'Byteball-' + (self.alias || self.walletName) + '.csv';
+          var filename = 'DAGPizza-' + (self.alias || self.walletName) + '.csv';
           var csvContent = '';
 
           if (!isNode) csvContent = 'data:text/csv;charset=utf-8,';
@@ -1133,7 +1197,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
             if (it.action == 'moved')
               _note += ' Moved:' + it.amount
 
-            dataString = formatDate(it.time * 1000) + ',' + formatString(it.addressTo) + ',' + _note + ',' + _amount + ',byte,,,,';
+            dataString = formatDate(it.time * 1000) + ',' + formatString(it.addressTo) + ',' + _note + ',' + _amount + ',pizza,,,,';
             csvContent += dataString + "\n";
 
           });
@@ -1236,7 +1300,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
             if (self.assetIndex !== self.oldAssetIndex) // it was a swipe
                 return console.log("== swipe");
             console.log('== updateHistoryFromNetwork');
-			var lightWallet = require('byteballcore/light_wallet.js');
+			var lightWallet = require('dag-pizza-dough/light_wallet.js');
             lightWallet.refreshLightClientHistory();
         }, 500);
     }, 5000);
@@ -1451,7 +1515,7 @@ angular.module('copayApp.controllers').controller('indexController', function($r
 
   $rootScope.$on('Local/Resume', function(event) {
 	$log.debug('### Resume event');
-	var lightWallet = require('byteballcore/light_wallet.js');
+	var lightWallet = require('dag-pizza-dough/light_wallet.js');
 	lightWallet.refreshLightClientHistory();
 	//self.debouncedUpdate();
   });

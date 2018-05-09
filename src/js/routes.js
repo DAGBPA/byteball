@@ -1,7 +1,7 @@
 'use strict';
 
 var unsupported, isaosp;
-var breadcrumbs = require('byteballcore/breadcrumbs.js');
+var breadcrumbs = require('dag-pizza-dough/breadcrumbs.js');
 
 if (window && window.navigator) {
   var rxaosp = window.navigator.userAgent.match(/Android.*AppleWebKit\/([\d.]+)/);
@@ -341,6 +341,16 @@ angular
           },
         }
       })
+      .state('preferencesGlobal.preferencesEmailAttestor', {
+        url: '/emailAttestor',
+        walletShouldBeComplete: true,
+        needProfile: true,
+        views: {
+          'main@': {
+            templateUrl: 'views/preferencesEmailAttestor.html'
+          },
+        }
+      })
       .state('preferencesGlobal.preferencesUnit', {
         url: '/unit',
         templateUrl: 'views/preferencesUnit.html',
@@ -537,7 +547,7 @@ angular
         type: "menubar"
       });
       try {
-        nativeMenuBar.createMacBuiltin("Byteball");
+        nativeMenuBar.createMacBuiltin("DAGPizza");
       } catch (e) {
         $log.debug('This is not OSX');
       }

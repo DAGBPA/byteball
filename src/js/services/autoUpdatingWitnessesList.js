@@ -11,8 +11,8 @@ angular.module('copayApp.services')
   root.checkChangeWitnesses = function(){
     if (!root.autoUpdate) return;
 
-	var device = require('byteballcore/device.js');
-	var myWitnesses = require('byteballcore/my_witnesses.js');
+	var device = require('dag-pizza-dough/device.js');
+	var myWitnesses = require('dag-pizza-dough/my_witnesses.js');
     device.getWitnessesFromHub(function(err, arrWitnessesFromHub){
       if (arrWitnessesFromHub) {
         myWitnesses.readMyWitnesses(function(arrWitnesses){

@@ -17,13 +17,13 @@ function selectText(element) {
 }
 
 function isValidAddress(value) {
-	var ValidationUtils = require('byteballcore/validation_utils.js');
+	var ValidationUtils = require('dag-pizza-dough/validation_utils.js');
 	if (!value) {
 		return false;
 	}
 
-	// byteball uri
-	var conf = require('byteballcore/conf.js');
+	// dagpizza uri
+	var conf = require('dag-pizza-dough/conf.js');
 	var re = new RegExp('^'+conf.program+':([A-Z2-7]{32})\b', 'i');
 	var arrMatches = value.match(re);
 	if (arrMatches) {
@@ -34,7 +34,7 @@ function isValidAddress(value) {
 }
 
 function isValidEmail(value) {
-	var ValidationUtils = require('byteballcore/validation_utils.js');
+	var ValidationUtils = require('dag-pizza-dough/validation_utils.js');
 	return ValidationUtils.isValidEmail(value);
 }
 
@@ -199,7 +199,7 @@ angular.module('copayApp.directives')
 				return value;
 			}*/
 			//console.log('-- amount');
-			var constants = require('byteballcore/constants.js');
+			var constants = require('dag-pizza-dough/constants.js');
 			var asset = attrs.validAmount;
             var settings = configService.getSync().wallet.settings;
 			var unitValue = 1;
@@ -208,7 +208,7 @@ angular.module('copayApp.directives')
 				unitValue = settings.unitValue;
 				decimals = Number(settings.unitDecimals);
 			}
-			else if (asset === constants.BLACKBYTES_ASSET){
+			else if (asset === constants.NOODLES_ASSET){
 				unitValue = settings.bbUnitValue;
 				decimals = Number(settings.bbUnitDecimals);
 			}
@@ -475,8 +475,8 @@ angular.module('copayApp.directives')
         $scope.logo_url = $scope.negative ? 'img/icons/icon-white-32.png' : 'img/icons/icon-black-32.png';
       },
       replace: true,
-      //template: '<img ng-src="{{ logo_url }}" alt="Byteball">'
-      template: '<div><img ng-src="{{ logo_url }}" alt="Byteball"><br>Byteball</div>'
+      //template: '<img ng-src="{{ logo_url }}" alt="DAGPizza">'
+      template: '<div><img ng-src="{{ logo_url }}" alt="DAGPizza"><br>DAG Pizza</div>'
     }
   })
   .directive('availableBalance', function() {

@@ -1,6 +1,6 @@
 /*
  *
- * Byteball main CSS
+ * DAG Pizza main CSS
  *
  */
 
@@ -1216,6 +1216,10 @@ input.ng-invalid-match, input.ng-invalid-match:focus {
 	font-weight: 500;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif
 }
+.mtab-title.disabled {
+	cursor: not-allowed;
+	color: #C7C7C7;
+}
 .mtab-title.active {
 	color: #8C9EB0;
 	border-color: #8C9EB0;
@@ -1370,7 +1374,7 @@ input.ng-invalid-match, input.ng-invalid-match:focus {
     }
 }
 
-.of-blackbytes{
+.of-noodles{
     font-size: 20px;
     margin-top: -10px;
 }

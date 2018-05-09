@@ -1,20 +1,20 @@
 'use strict';
 
-var constants = require('byteballcore/constants.js');
+var constants = require('dag-pizza-dough/constants.js');
 
 angular.module('copayApp.services').factory('txFormatService', function(profileService, configService, lodash) {
   var root = {};
 
   var formatAmountStr = function(amount, asset) {
 	if (!amount) return;
-	if (asset !== "base" && asset !==  constants.BLACKBYTES_ASSET && !profileService.assetMetadata[asset])
+	if (asset !== "base" && asset !==  constants.NOODLES_ASSET && !profileService.assetMetadata[asset])
 		return amount;
 	return profileService.formatAmountWithUnit(amount, asset);
   };
 	
 	var formatFeeStr = function(fee) {
 		if (!fee) return;
-		return fee + ' bytes';
+		return fee + ' pizza';
 	};
 
   root.processTx = function(tx) {

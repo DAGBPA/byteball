@@ -1,16 +1,16 @@
 'use strict';
 
-var constants = require('byteballcore/constants.js');
-var eventBus = require('byteballcore/event_bus.js');
-var ValidationUtils = require('byteballcore/validation_utils.js');
-var objectHash = require('byteballcore/object_hash.js');
+var constants = require('dag-pizza-dough/constants.js');
+var eventBus = require('dag-pizza-dough/event_bus.js');
+var ValidationUtils = require('dag-pizza-dough/validation_utils.js');
+var objectHash = require('dag-pizza-dough/object_hash.js');
 
 angular.module('copayApp.services').factory('correspondentListService', function($state, $rootScope, $sce, $compile, configService, storageService, profileService, go, lodash, $stickyState, $deepStateRedirect, $timeout, gettext) {
 	var root = {};
-	var device = require('byteballcore/device.js');
-	var wallet = require('byteballcore/wallet.js');
+	var device = require('dag-pizza-dough/device.js');
+	var wallet = require('dag-pizza-dough/wallet.js');
 
-	var chatStorage = require('byteballcore/chat_storage.js');
+	var chatStorage = require('dag-pizza-dough/chat_storage.js');
 	$rootScope.newMessagesCount = {};
 	$rootScope.newMsgCounterEnabled = false;
 
@@ -36,7 +36,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 	}, true);
 	
 	function addIncomingMessageEvent(from_address, body, message_counter){
-		var walletGeneral = require('byteballcore/wallet_general.js');
+		var walletGeneral = require('dag-pizza-dough/wallet_general.js');
 		walletGeneral.readMyAddresses(function(arrMyAddresses){
 			body = highlightActions(escapeHtml(body), arrMyAddresses);
 			body = text2html(body);
@@ -98,10 +98,10 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		messages.push(msg_obj);
 	}
 	
-	var payment_request_regexp = /\[.*?\]\(byteball:([0-9A-Z]{32})\?([\w=&;+%]+)\)/g; // payment description within [] is ignored
+	var payment_request_regexp = /\[.*?\]\(dagpizza:([0-9A-Z]{32})\?([\w=&;+%]+)\)/g; // payment description within [] is ignored
 	
 	function highlightActions(text, arrMyAddresses){
-		return text.replace(/\b[2-7A-Z]{32}\b(?!(\?(amount|asset|device_address)|"))/g, function(address){
+		return text.replace(/\b[2-7A-Z]{32}\b(?!(\?(amount|asset|device_address|single_address)|"))/g, function(address){
 			if (!ValidationUtils.isValidAddress(address))
 				return address;
 		//	if (arrMyAddresses.indexOf(address) >= 0)
@@ -120,7 +120,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 			var objPaymentRequest = parsePaymentRequestQueryString(query_string);
 			if (!objPaymentRequest)
 				return str;
-			return '<a ng-click="sendPayment(\''+address+'\', '+objPaymentRequest.amount+', \''+objPaymentRequest.asset+'\', \''+objPaymentRequest.device_address+'\')">'+objPaymentRequest.amountStr+'</a>';
+			return '<a ng-click="sendPayment(\''+address+'\', '+objPaymentRequest.amount+', \''+objPaymentRequest.asset+'\', \''+objPaymentRequest.device_address+'\', \''+objPaymentRequest.single_address+'\')">'+objPaymentRequest.amountStr+'</a>';
 		}).replace(/\[(.+?)\]\(command:(.+?)\)/g, function(str, description, command){
 			return '<a ng-click="sendCommand(\''+escapeQuotes(command)+'\', \''+escapeQuotes(description)+'\')" class="command">'+description+'</a>';
 		}).replace(/\[(.+?)\]\(payment:(.+?)\)/g, function(str, description, paymentJsonBase64){
@@ -142,6 +142,21 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		}).replace(/\[(.+?)\]\(profile-request:([\w,]+?)\)/g, function(str, description, fields_list){
 			var arrFields = fields_list.split(',');
 			return '<a ng-click="choosePrivateProfile(\''+fields_list+'\')">[Request for profile]</a>';
+		}).replace(/\[(.+?)\]\(sign-message-request:(.+?)\)/g, function(str, description, message_to_sign){
+			return '<a ng-click="showSignMessageModal(\''+message_to_sign+'\')">[Request to sign message: '+message_to_sign+']</a>';
+		}).replace(/\[(.+?)\]\(signed-message:(.+?)\)/g, function(str, description, signedMessageBase64){
+			var info = getSignedMessageInfoFromJsonBase64(signedMessageBase64);
+			if (!info)
+				return '<i>[invalid signed message]</i>';
+			var objSignedMessage = info.objSignedMessage;
+			var text = 'Message signed by '+objSignedMessage.authors[0].address+': '+objSignedMessage.signed_message;
+			if (info.bValid)
+				text += " (valid)";
+			else if (info.bValid === false)
+				text += " (invalid)";
+			else
+				text += ' (<a ng-click="verifySignedMessage(\''+signedMessageBase64+'\')">verify</a>)';
+			return '<i>['+text+']</i>';
 		}).replace(/\bhttps?:\/\/\S+/g, function(str){
 			return '<a ng-click="openExternalLink(\''+escapeQuotes(str)+'\')" class="external-link">'+str+'</a>';
 		});
@@ -195,15 +210,9 @@ angular.module('copayApp.services').factory('correspondentListService', function
 	}
 	
 	function getPrivateProfileFromJsonBase64(privateProfileJsonBase64){
-		var privateProfileJson = Buffer(privateProfileJsonBase64, 'base64').toString('utf8');
-		console.log(privateProfileJson);
-		try{
-			var objPrivateProfile = JSON.parse(privateProfileJson);
-		}
-		catch(e){
-			return null;
-		}
-		if (!ValidationUtils.isStringOfLength(objPrivateProfile.unit, 44) || !ValidationUtils.isStringOfLength(objPrivateProfile.payload_hash, 44) || typeof objPrivateProfile.src_profile !== 'object')
+		var privateProfile = require('dag-pizza-dough/private_profile.js');
+		var objPrivateProfile = privateProfile.getPrivateProfileFromJsonBase64(privateProfileJsonBase64);
+		if (!objPrivateProfile)
 			return null;
 		var arrFirstFields = [];
 		for (var field in objPrivateProfile.src_profile){
@@ -216,6 +225,28 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		}
 		objPrivateProfile._label = arrFirstFields.join(' ');
 		return objPrivateProfile;
+	}
+	
+	function getSignedMessageInfoFromJsonBase64(signedMessageBase64){
+		var signedMessageJson = Buffer(signedMessageBase64, 'base64').toString('utf8');
+		console.log(signedMessageJson);
+		try{
+			var objSignedMessage = JSON.parse(signedMessageJson);
+		}
+		catch(e){
+			return null;
+		}
+		var info = {
+			objSignedMessage: objSignedMessage,
+			bValid: undefined
+		};
+		var validation = require('dag-pizza-dough/validation.js');
+		validation.validateSignedMessage(objSignedMessage, function(err){
+			info.bValid = !err;
+			if (err)
+				console.log("validateSignedMessage: "+err);
+		});
+		return info;
 	}
 	
 	function getPaymentsByAsset(objMultiPaymentRequest){
@@ -259,13 +290,28 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		}).replace(/\[(.+?)\]\(profile-request:([\w,]+?)\)/g, function(str, description, fields_list){
 			var arrFields = fields_list.split(',');
 			return '[Request for profile fields '+fields_list+']';
+		}).replace(/\[(.+?)\]\(sign-message-request:(.+?)\)/g, function(str, description, message_to_sign){
+			return '<i>[Request to sign message: '+message_to_sign+']</i>';
+		}).replace(/\[(.+?)\]\(signed-message:(.+?)\)/g, function(str, description, signedMessageBase64){
+			var info = getSignedMessageInfoFromJsonBase64(signedMessageBase64);
+			if (!info)
+				return '<i>[invalid signed message]</i>';
+			var objSignedMessage = info.objSignedMessage;
+			var text = 'Message signed by '+objSignedMessage.authors[0].address+': '+objSignedMessage.signed_message;
+			if (info.bValid)
+				text += " (valid)";
+			else if (info.bValid === false)
+				text += " (invalid)";
+			else
+				text += ' (<a ng-click="verifySignedMessage(\''+signedMessageBase64+'\')">verify</a>)';
+			return '<i>['+text+']</i>';
 		}).replace(/\bhttps?:\/\/\S+/g, function(str){
 			return '<a ng-click="openExternalLink(\''+escapeQuotes(str)+'\')" class="external-link">'+str+'</a>';
 		});
 	}
 	
 	function parsePaymentRequestQueryString(query_string){
-		var URI = require('byteballcore/uri.js');
+		var URI = require('dag-pizza-dough/uri.js');
 		var assocParams = URI.parseQueryString(query_string, '&amp;');
 		var strAmount = assocParams['amount'];
 		if (!strAmount)
@@ -282,12 +328,18 @@ angular.module('copayApp.services').factory('correspondentListService', function
 		var device_address = assocParams['device_address'] || '';
 		if (device_address && !ValidationUtils.isValidDeviceAddress(device_address))
 			return null;
+		var single_address = assocParams['single_address'] || 0;
+		if (single_address)
+			single_address = single_address.replace(/^single/, '');
+		if (single_address && !ValidationUtils.isValidAddress(single_address))
+			single_address = 1;
 		var amountStr = 'Payment request: ' + getAmountText(amount, asset);
 		return {
 			amount: amount,
 			asset: asset,
 			device_address: device_address,
-			amountStr: amountStr
+			amountStr: amountStr,
+			single_address: single_address
 		};
 	}
 	
@@ -327,7 +379,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 				amount /= unitValue;
 			return amount + ' ' + unitName;
 		}
-		else if (asset === constants.BLACKBYTES_ASSET){
+		else if (asset === constants.NOODLES_ASSET){
 			var walletSettings = configService.getSync().wallet.settings;
 			var bbUnitValue = walletSettings.bbUnitValue;
 			var bbUnitName = walletSettings.bbUnitName;
@@ -338,8 +390,10 @@ angular.module('copayApp.services').factory('correspondentListService', function
 			amount /= Math.pow(10, profileService.assetMetadata[asset].decimals || 0);
 			return amount + ' ' + profileService.assetMetadata[asset].name;
 		}
-		else
+		else{
+			wallet.readAssetMetadata([asset], function(){});
 			return amount + ' of ' + asset;
+		}
 	}
 		
 	function getHumanReadableDefinition(arrDefinition, arrMyAddresses, arrMyPubKeys, arrPeerAddresses, bWithLinks){
@@ -444,7 +498,7 @@ angular.module('copayApp.services').factory('correspondentListService', function
 			for (var i in messages) {
 				messages[i] = parseMessage(messages[i]);
 			}
-			var walletGeneral = require('byteballcore/wallet_general.js');
+			var walletGeneral = require('dag-pizza-dough/wallet_general.js');
 			walletGeneral.readMyAddresses(function(arrMyAddresses){
 				if (messages.length < limit)
 					historyEndForCorrespondent[correspondent.device_address] = true;
