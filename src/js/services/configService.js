@@ -218,15 +218,15 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 				setting.unitCode = 'one';
 				setting.unitValue = 1;
 		  	break;
-		  case 'kB':
+		  case 'kP':
 				setting.unitCode = 'kilo';
 				setting.unitValue = 1000;
 		  	break;
-		  case 'MB':
+		  case 'MP':
 				setting.unitCode = 'mega';
 				setting.unitValue = 1000000;
 		  	break;
-		  case 'GB':
+		  case 'GP':
 				setting.unitCode = 'giga';
 				setting.unitValue = 1000000000;
 		  	break;

@@ -44,21 +44,21 @@ angular.module('copayApp.controllers').controller('preferencesUnitController',
       }
       , {
         name: 'kPizza (1,000 pizza)',
-        shortName: 'kB',
+        shortName: 'kP',
         value: 1000,
         decimals: 3,
         code: 'kilo',
       }
       , {
         name: 'MPizza (1,000,000 pizza)',
-        shortName: 'MB',
+        shortName: 'MP',
         value: 1000000,
         decimals: 6,
         code: 'mega',
       }
       , {
         name: 'GPizza (1,000,000,000 pizza)',
-        shortName: 'GB',
+        shortName: 'GP',
         value: 1000000000,
         decimals: 9,
         code: 'giga',
