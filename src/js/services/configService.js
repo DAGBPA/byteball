@@ -56,7 +56,7 @@ angular.module('copayApp.services').factory('configService', function(storageSer
 		totalCosigners: 6
 	},
 
-	hub: (constants.alt === '2' && isTestnet) ? 'dagpizza.org/bb-test' : 'dagpizza.org/bb',
+	hub: (constants.alt === '2' && isTestnet) ? 'dagpizza.org/pp-test' : 'dagpizza.org/pp',
 	emailAttestor: 'H5EZTQE7ABFH27AUDTQFMZIALANK6RBG',
 
 	// requires bluetooth permission on android
