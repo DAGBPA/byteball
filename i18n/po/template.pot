@@ -270,7 +270,7 @@ msgid "Browser unsupported"
 msgstr ""
 
 #: public/index.html:12
-msgid "DAG Pizza &mdash; smart payments"
+msgid "DAG Pizza &mdash; we eat"
 msgstr ""
 
 #: public/views/modals/destination-address.html:119
