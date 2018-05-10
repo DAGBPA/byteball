@@ -1271,7 +1271,7 @@ msgstr "单地址钱包不会为每个交易产生新地址，余额改变将始
 
 #: src/js/services/profileService.js:318
 msgid "Small Expenses Wallet"
-msgstr "小额钱包"
+msgstr "我的钱包"
 
 #: src/js/controllers/create.js:32
 msgid "Specify Seed..."

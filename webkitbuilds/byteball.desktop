@@ -2,7 +2,7 @@
 Type=Application
 Version=1.0
 Name=DAGPizza
-Comment=Smart payments made simple
+Comment=In pizza we eat
 Exec=bash -c 'cd $(dirname %k) && ./DAGPizza %u'
 Icon=icon-white-256.png
 Terminal=false

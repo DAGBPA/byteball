@@ -209,7 +209,7 @@ module.exports = function(grunt) {
           platforms: [getPlatform()],
           appName: 'DAGPizza',
           buildDir: '../dagpizzabuilds',
-          version: '0.14.7',
+          version: '0.26.1',
           zip: false,
           macIcns: './public/img/icons/icon-white-outline.icns',
           winIco: './public/img/icons/icon-white-outline.ico',
@@ -266,7 +266,7 @@ module.exports = function(grunt) {
                     name: 'DAGBPA',
                     email: 'bitcoinpizza.bpa@gmail.com'
                 },
-                long_description: 'Smart payments made simple',
+                long_description: 'In pizza we eat',
                 target_architecture: 'amd64'
             }
         }
