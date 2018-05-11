@@ -56,7 +56,7 @@ pushd "${STAGING_DIR}"
 popd
 
 # Fix size to 150MB
-SIZE=350
+SIZE=850
 
 if [ $? -ne 0 ]; then
    echo "Error: Cannot compute size of staging dir"
@@ -65,7 +65,7 @@ fi
 
 # create the temp DMG file
 hdiutil create -srcfolder "${STAGING_DIR}" -volname "${VOL_NAME}" -fs HFS+ \
-      -fsargs "-c c=64,a=16,e=16" -format UDRW -megapizza ${SIZE} "${DMG_TMP}"
+      -fsargs "-c c=64,a=16,e=16" -format UDRW -megabytes ${SIZE} "${DMG_TMP}"
 
 echo "Created DMG: ${DMG_TMP}"
 
